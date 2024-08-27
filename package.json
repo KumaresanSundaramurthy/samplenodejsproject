@@ -1,0 +1,28 @@
+{
+  "name": "samplenodejsproject",
+  "version": "1.0.0",
+  "description": "this is node js tutorial for begineers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KumaresanSundaramurthy/samplenodejsproject.git"
+  },
+  "author": "Kumaresan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KumaresanSundaramurthy/samplenodejsproject/issues"
+  },
+  "homepage": "https://github.com/KumaresanSundaramurthy/samplenodejsproject#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "minimist": "^1.2.8",
+    "progress": "^2.0.3"
+  }
+}
