@@ -27,7 +27,11 @@ class UserService {
                 throw new Error("User Password is Incorrect. Please enter correct Password!");
             }
 
-            return true;
+            return {
+                Message: "Validated Successfully",
+                Success: true,
+                Data: findUser
+            };
 
         } catch (error) {
             throw error;

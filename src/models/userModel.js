@@ -30,6 +30,6 @@ userSchema.methods.comparePassword = function (userPassword) {
 }
 
 const db = mongoose.connection.useDb('practise');
-const userData = db.model('users', userSchema);
+const userData = db.model('Users', userSchema, 'Users');
 
 module.exports = userData;

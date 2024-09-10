@@ -1,5 +1,7 @@
-const userModule = require("../models/userModel");
 const userService = require("../services/authServices");
+const redisClient = require("../libraries/redisCache");
+const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 
 class UserController {
 
@@ -8,7 +10,7 @@ class UserController {
 
         try {
 
-            const { UserName, Password } = request.query;
+            const { UserName, Password } = request.body;
 
             if (!UserName || !Password) {
                 return response.status(400).json({
@@ -18,11 +20,49 @@ class UserController {
             }
 
             const UserVerify = await userService.checkUserAuthentication(UserName, Password);
-            if (UserVerify) {
+            if (UserVerify.Success) {
+
+                // const RedisKey = uuidv4() + '-' + UserVerify.Data._id.toString();
+                const RedisKey = Buffer.from(UserVerify.Data._id.toString(), 'utf-8').toString('base64');
+
+                /** Generate JwtToken */
+                const JwtPayload = {
+                    data: RedisKey,
+                    iat: Math.floor(Date.now() / 1000),
+                    nbf: Math.floor(Date.now() / 1000),
+                    exp: Math.floor(Date.now() / 1000) + 43200,
+                }
+                const jwtEncoded = jwt.sign(JwtPayload, process.env.JWT_SECRET, {
+                    algorithm: 'HS256',
+                    issuer: process.env.HTTP_HOST || 'http://localhost:3000',
+                });
+
+                const UserInfo = {
+                    User: {
+                        UniqueID: UserVerify.Data._id.toString(),
+                        UserName: UserVerify.Data.UserName,
+                    },
+                    JwtToken: jwtEncoded,
+                    RedisKey: RedisKey,
+                }
+
+                await redisClient.set(RedisKey, JSON.stringify(UserInfo), 43200);
+
+                // response.cookie(process.env.JWT_COOKIE_NAME, jwtEncoded, {
+                //     httpOnly: true,
+                //     maxAge: 3600000,
+                //     secure: process.env.NODE_ENV === 'production',
+                //     sameSite: 'None'
+                // });
+
                 response.status(200).json({
                     Message: "Successfully verified User Authentication",
-                    Success: true
-                })
+                    Success: true,
+                    Data: {
+                        UserID: UserVerify.Data._id.toString()
+                    }
+                });
+
             } else {
                 response.status(200).json({
                     Message: "Could not find the User information",
@@ -31,11 +71,11 @@ class UserController {
             }
 
         } catch (error) {
-            if(error.message == "User Not Found!" || error.message == "User Password is Incorrect. Please enter correct Password!") {
+            if (error.message == "User Not Found!" || error.message == "User Password is Incorrect. Please enter correct Password!") {
                 response.status(401);
             } else {
                 response.status(500);
-            }            
+            }
             response.json({
                 Message: error.message,
                 Success: false,
