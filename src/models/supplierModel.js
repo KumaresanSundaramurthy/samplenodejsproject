@@ -1,20 +1,22 @@
 const mongoose = require('mongoose');
 
-const createMedicineNameSchema = new mongoose.Schema({
-    MedicineName: {
+const newSchema = new mongoose.Schema({
+    SupplierName: {
         type: String,
         required: true,
         unique: true,
     },
-    GenericDetails: {
-        GenericUniqId: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-        },
-        GenericName: {
-            type: String,
-            required: true,
-        }
+    Mobile: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    AddressInfo: {
+        type: String,
+        required: true,
+    },
+    PreviousDue: {
+        type: Number
     },
     ReferenceId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -47,21 +49,23 @@ const createMedicineNameSchema = new mongoose.Schema({
     },
 });
 
-const updateMedicineNameSchema = new mongoose.Schema({
-    MedicineName: {
+const updateSchema = new mongoose.Schema({
+    SupplierName: {
         type: String,
         required: true,
         unique: true,
     },
-    GenericDetails: {
-        GenericUniqId: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-        },
-        GenericName: {
-            type: String,
-            required: true,
-        }
+    Mobile: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    AddressInfo: {
+        type: String,
+        required: true,
+    },
+    PreviousDue: {
+        type: Number
     },
     ReferenceId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -79,25 +83,23 @@ const updateMedicineNameSchema = new mongoose.Schema({
         type: Number,
         default: Math.floor(Date.now() / 1000),
     },
-}, { strict: false });
-
-updateMedicineNameSchema.pre('findOneAndUpdate', function (next) {
+}).pre('findOneAndUpdate', function(next) {
     this.set({
         IsActive: true,
         UpdatedDate: new Date(),
-        UpdatedOn: Math.floor(Date.now() / 1000),
+        UpdatedOn: Math.floor(Date.now() / 1000)
     })
     next();
-})
+});
 
-const deleteMedicineNameSchema = new mongoose.Schema({
+const deleteSchema = new mongoose.Schema({
     ReferenceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reference',
     },
     IsActive: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     UpdatedDate: {
         type: Date,
@@ -107,23 +109,37 @@ const deleteMedicineNameSchema = new mongoose.Schema({
         type: Number,
         default: Math.floor(Date.now() / 1000),
     },
-}).pre('findOneAndUpdate', function (next) {
+}).pre('findOneAndUpdate', function(next) {
     this.set({
         IsActive: false,
         UpdatedDate: new Date(),
-        UpdatedOn: Math.floor(Date.now() / 1000),
+        UpdatedOn: Math.floor(Date.now() / 1000)
     })
     next();
-})
+});
+
+const updateNewFields = new mongoose.Schema({
+    InventoryRefId: {
+        type: mongoose.Schema.Types.ObjectId,
+        // required: true,
+        default: null,
+    },
+    InventoryType: {
+        type: String,
+        required: true,
+        default: 'Default', // Default (or) Purchase
+    },
+});
 
 const db = mongoose.connection.useDb('practise');
-
-const createMedicineName = db.model('Medicine', createMedicineNameSchema, 'Medicine')
-const updateMedicineName = db.model('Medicine', updateMedicineNameSchema, 'Medicine')
-const deleteMedicineName = db.model('Medicine', deleteMedicineNameSchema, 'Medicine')
+const createSupplierSchema = db.model('Supplier', newSchema, 'Supplier');
+const updateSupplierSchema = db.model('Supplier', updateSchema, 'Supplier');
+const deleteSupplierSchema = db.model('Supplier', deleteSchema, 'Supplier');
+const updateNewFieldsSupplier = db.model('InventoryPayment', updateNewFields, 'InventoryPayment');
 
 module.exports = {
-    createMedicineName,
-    updateMedicineName,
-    deleteMedicineName,
+    createSupplierSchema,
+    updateSupplierSchema,
+    deleteSupplierSchema,
+    updateNewFieldsSupplier,
 }

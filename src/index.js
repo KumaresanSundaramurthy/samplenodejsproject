@@ -9,6 +9,8 @@ const authRoute = require("./routes/authRoute");
 const medicineRoute = require('./routes/medicineRoute');
 const genericRoute = require('./routes/genericNameRoute');
 const medicineNameRoute = require('./routes/medicineNameRoute');
+const supplierRoute = require('./routes/supplierRoute');
+const purchaseRoute = require('./routes/inventoryPurchaseRoute');
 
 dbConn();
 require('dotenv').config();
@@ -31,6 +33,8 @@ app.use('/api/users', authRoute);
 app.use('/api/medicines', medicineRoute);
 app.use('/api/generic', genericRoute);
 app.use('/api/medicinename', medicineNameRoute);
+app.use('/api/supplier', supplierRoute);
+app.use('/api/purchase', purchaseRoute);
 
 const PORT = process.env.PORT || 3000;
 

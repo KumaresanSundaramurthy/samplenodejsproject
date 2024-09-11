@@ -1,13 +1,13 @@
-const medicineNameService = require('../services/medicineNameService');
+const supplierServices = require('../services/supplierServices');
 
-class MedicineController {
+class SupplierController {
 
-    /** Get All Medicine Details */
-    async getAllMedicineDetails(request, response) {
+    /** Get All Supplier Details */
+    async getAllSuppliers(request, response) {
 
         try {
 
-            const getData = await medicineNameService.getAllMedicineNameDetails();
+            const getData = await supplierServices.getAllSupplierDetails();
             if(getData) {
                 response.status(200).json({
                     Message: 'Data Retrieved',
@@ -31,12 +31,12 @@ class MedicineController {
 
     }
 
-    /** Create a Medicine Details */
-    async createMedicineDetails(request, response) {
+    /** Create a Supplier Data */
+    async createSupplierDetails(request, response) {
 
         try {
 
-            const createResp = await medicineNameService.createMedicineNameDeta(request.body);
+            const createResp = await supplierServices.createSupplierData(request.body);
             if(createResp) {
                 response.status(200).json({
                     Message: 'Created Successfully',
@@ -58,12 +58,12 @@ class MedicineController {
 
     }
 
-    /** Get a Medicine Details by Id */
-    async getMedicineDetails(request, response) {
+    /** Supplier Details by ID */
+    async getSupplierDetails(request, response) {
 
         try {
 
-            const getResp = await medicineNameService.getMedicineNameData(request.body);
+            const getResp = await supplierServices.getSupplierData(request.body);
             if(getResp) {
                 response.status(200).json({
                     Message: 'Data Retrieved Successfully',
@@ -87,12 +87,12 @@ class MedicineController {
 
     }
 
-    /** Update a Medicine Details By ID */
-    async updateMedicineDetails(request, response) {
+    /** Update Supplier By ID */
+    async updateSupplierDetails(request, response) {
 
         try {
 
-            const getResp = await medicineNameService.updateMedicineData(request.body);
+            const getResp = await supplierServices.updateSupplierData(request.body);
             if(getResp) {
                 response.status(200).json({
                     Message: 'Data Updated Successfully',
@@ -114,12 +114,12 @@ class MedicineController {
 
     }
 
-    /** Update Medicine Details by ID */
-    async deleteMedicineDetails(request, response) {
+    /** Delete Supplier by ID */
+    async deleteSupplierDetails(request, response) {
 
         try {
 
-            const getResp = await medicineNameService.deleteMedicineData(request.body);
+            const getResp = await supplierServices.deleteSupplierData(request.body);
             if(getResp) {
                 response.status(200).json({
                     Message: 'Data Deleted Successfully',
@@ -141,6 +141,33 @@ class MedicineController {
 
     }
 
+    /** Update New Fields for all documents */
+    async updateNewFields(request, response) {
+
+        try {
+
+            const getResp = await supplierServices.updateNewFields(request.body);
+            if(getResp) {
+                response.status(200).json({
+                    Message: 'Data Updated Successfully',
+                    Status: true,
+                })
+            } else {
+                response.status(500).json({
+                    Message: 'Error updating',
+                    Status: false,
+                })
+            }
+
+        } catch(error) {
+            response.status(500).json({
+                Message: error,
+                Status: false,
+            })
+        }
+
+    }
+
 }
 
-module.exports = new MedicineController;
+module.exports = new SupplierController;
